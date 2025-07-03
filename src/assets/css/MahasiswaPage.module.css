@@ -1,0 +1,135 @@
+.mahasiswaPage {
+    padding: 2rem;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.formCard {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.formCard h2 {
+    margin-top: 0;
+    color: #1a202c;
+}
+
+.formGroup {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.formGroup input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.formActions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.btnPrimary {
+    background-color: #2563eb;
+    color: white;
+}
+.btnPrimary:hover {
+    background-color: #1d4ed8;
+}
+
+.btnSecondary {
+    background-color: #e2e8f0;
+    color: #2d3748;
+}
+.btnSecondary:hover {
+    background-color: #cbd5e0;
+}
+
+.mahasiswaGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.mahasiswaCard {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.mahasiswaCard h3 {
+    margin: 0 0 0.5rem 0;
+    color: #1a202c;
+}
+
+.mahasiswaCard p {
+    margin: 0 0 1.5rem 0;
+    color: #4a5568;
+    flex-grow: 1;
+}
+
+.cardActions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.cardBtn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #cbd5e0;
+    background: transparent;
+    color: #4a5568;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.cardBtn.delete {
+    border-color: #f56565;
+    color: #f56565;
+}
+
+.loaderContainer { 
+    text-align: center; 
+    padding: 2rem; 
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: fadeInOut 3s forwards;
+}
+
+.notification.success { background-color: #28a745; }
+.notification.error { background-color: #dc3545; }
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; transform: translateY(-20px); }
+    10%, 90% { opacity: 1; transform: translateY(0); }
+}

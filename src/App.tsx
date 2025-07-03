@@ -2,8 +2,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import Layout from "./components/Layout"
 import UserRegister from "./pages/UserRegister"
 import Login from "./pages/Login"
-import Home from "./pages/Home"
-import DashboardLayout from "./components/DashboardLayout"
+import DomainLayout from "./components/DomainLayout"
+import Mahasiswa from "./pages/Mahasiswa"
+import Dosen from "./pages/Dosen"
+import KelasPage from "./pages/KelasPage"
+import MataKuliahPage from "./pages/MataKuliahPage"
+import HomePage from "./pages/HomePage"
 
 function App() {
 
@@ -13,10 +17,13 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<UserRegister />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<HomePage/>} />
         </Route>
-        <Route element={<DashboardLayout />}>
-          <Route path="/home" element={<Home />} />
+        <Route element={<DomainLayout/>}>
+          <Route path="/mahasiswa" element={<Mahasiswa/>} />
+          <Route path="/matakuliah" element={<MataKuliahPage/>} />
+          <Route path="/kelas" element={<KelasPage/>} />
+          <Route path="/dosen" element={<Dosen/>} />
         </Route>
       </Routes>
     </BrowserRouter>     
