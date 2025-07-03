@@ -1,6 +1,5 @@
-// src/pages/UserRegister.jsx
-
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "../utils/supabase";
 
@@ -15,7 +14,6 @@ export default function UserRegister() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
-  // State baru untuk fungsionalitas tambahan
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -25,7 +23,7 @@ export default function UserRegister() {
   async function handleRegister(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setMessage({ type: "", text: "" }); // Reset pesan
+    setMessage({ type: "", text: "" });
 
     if (password.length < 6) {
         setMessage({ type: "error", text: "Password harus terdiri dari minimal 6 karakter." });
@@ -41,17 +39,13 @@ export default function UserRegister() {
     if (error) {
       setMessage({ type: "error", text: error.message });
     } else if (data.user) {
-      // Menampilkan pesan sukses
-      setMessage({ type: "success", text: "Registrasi berhasil! Silakan cek email Anda untuk verifikasi." });
+      // Menampilkan pesan sukses dan memberitahu akan diarahkan
+      setMessage({ type: "success", text: "Registrasi berhasil! Mengarahkan ke halaman login..." });
       
-      // Kosongkan form
-      setEmail("");
-      setPassword("");
-
-      // (Opsional) Arahkan ke halaman login setelah beberapa detik
+      // Arahkan ke halaman login setelah 2 detik agar pesan sempat terbaca
       setTimeout(() => {
-        navigate('/login');
-      }, 3000);
+        navigate('/');
+      }, 2000);
     }
     setLoading(false);
   }
@@ -59,7 +53,6 @@ export default function UserRegister() {
   return (
     <main className="mt-0 transition-all duration-200 ease-in-out">
       <section className="min-h-screen">
-        {/* ... bagian header cover tidak diubah ... */}
         <div className="bg-top relative flex items-start pt-12 pb-56 m-4 overflow-hidden bg-cover min-h-50-screen rounded-xl bg-[url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signup-cover.jpg')]">
           <span className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-gradient-to-tl from-zinc-800 to-zinc-700 opacity-60" />
           <div className="container z-10">
@@ -114,19 +107,19 @@ export default function UserRegister() {
                     <div className="text-center">
                       <button type="submit" className={`${buttonClasses} disabled:opacity-50 disabled:cursor-not-allowed`} disabled={loading}>
                         {loading ? (
-                           <div className="flex items-center justify-center">
+                            <div className="flex items-center justify-center">
                               <svg className="w-5 h-5 mr-3 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                               </svg>
                               Processing...
-                           </div>
+                            </div>
                         ) : 'Sign Up'}
                       </button>
                     </div>
 
                     <p className="mt-4 mb-0 leading-normal text-center text-sm">
-                      Already have an account? <Link to="/login" className="font-bold text-slate-700 hover:text-blue-500 transition-colors">Sign in</Link>
+                      Already have an account? <Link to="/" className="font-bold text-slate-700 hover:text-blue-500 transition-colors">Sign in</Link>
                     </p>
                   </form>
                 </div>
@@ -136,7 +129,6 @@ export default function UserRegister() {
         </div>
       </section>
       
-      {/* ... bagian footer tidak diubah ... */}
       <footer className="py-12">
         <div className="container">
           <div className="flex flex-wrap -mx-3">
