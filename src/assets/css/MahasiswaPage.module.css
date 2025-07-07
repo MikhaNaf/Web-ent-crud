@@ -1,135 +1,160 @@
+/* Latar belakang utama halaman */
 .mahasiswaPage {
-    padding: 2rem;
-    background-color: #f0f2f5;
+    padding: 2.5rem;
+    background-color: #f8f9fa; /* Warna abu-abu yang sangat terang */
     min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
 }
 
+/* Kartu untuk form input */
 .formCard {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* Shadow lebih halus */
+    margin-bottom: 2.5rem;
 }
 
 .formCard h2 {
     margin-top: 0;
-    color: #1a202c;
+    margin-bottom: 1.5rem;
+    color: #212529;
+    font-weight: 600;
+    font-size: 1.75rem;
 }
 
+/* Grup untuk input form */
 .formGroup {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
-.formGroup input {
+.formGroup input, .formGroup select {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #cbd5e0;
-    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
     font-size: 1rem;
+    background-color: #f8f9fa;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.formGroup input:focus, .formGroup select:focus {
+    outline: none;
+    border-color: #4C6EF5;
+    box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.15);
+}
+
+/* Tombol-tombol utama */
 .formActions {
     display: flex;
     gap: 1rem;
+    margin-top: 1rem;
 }
 
 .btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.8rem 1.75rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
 }
 
 .btnPrimary {
-    background-color: #2563eb;
+    background: linear-gradient(to right, #4C6EF5, #364FC7);
     color: white;
+    box-shadow: 0 4px 15px rgba(76, 110, 245, 0.2);
 }
 .btnPrimary:hover {
-    background-color: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 110, 245, 0.3);
 }
 
 .btnSecondary {
-    background-color: #e2e8f0;
-    color: #2d3748;
+    background-color: #e9ecef;
+    color: #495057;
 }
 .btnSecondary:hover {
-    background-color: #cbd5e0;
+    background-color: #dee2e6;
 }
 
+/* Grid untuk kartu-kartu mahasiswa */
 .mahasiswaGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
 }
 
+/* Desain kartu mahasiswa */
 .mahasiswaCard {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    padding: 1.5rem;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-left: 5px solid #4C6EF5; /* Aksen warna di sisi kiri */
+}
+.mahasiswaCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
 }
 
 .mahasiswaCard h3 {
-    margin: 0 0 0.5rem 0;
-    color: #1a202c;
+    margin: 1.5rem 1.5rem 0.5rem 1.5rem;
+    color: #212529;
+    font-weight: 600;
 }
 
 .mahasiswaCard p {
-    margin: 0 0 1.5rem 0;
-    color: #4a5568;
-    flex-grow: 1;
+    margin: 0 1.5rem 1.5rem 1.5rem;
+    color: #6c757d;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    flex-grow: 1; /* Mendorong tombol ke bawah */
 }
 
+/* Tombol di dalam kartu */
 .cardActions {
     display: flex;
-    gap: 0.5rem;
-    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #f1f3f5;
+    background-color: #f8f9fa;
 }
 
 .cardBtn {
     padding: 0.5rem 1rem;
-    border: 1px solid #cbd5e0;
-    background: transparent;
-    color: #4a5568;
+    border: 1px solid #dee2e6;
+    background: white;
+    color: #495057;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.cardBtn:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
 }
 
 .cardBtn.delete {
-    border-color: #f56565;
-    color: #f56565;
+    border-color: #fa5252;
+    color: #fa5252;
 }
-
-.loaderContainer { 
-    text-align: center; 
-    padding: 2rem; 
-}
-
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 1rem 1.5rem;
-    border-radius: 6px;
+.cardBtn.delete:hover {
+    background-color: #fa5252;
     color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    animation: fadeInOut 3s forwards;
 }
 
-.notification.success { background-color: #28a745; }
-.notification.error { background-color: #dc3545; }
-
-@keyframes fadeInOut {
-    0%, 100% { opacity: 0; transform: translateY(-20px); }
-    10%, 90% { opacity: 1; transform: translateY(0); }
-}
+/* ... Style untuk Notifikasi dan Loader (bisa tetap sama) ... */
+.loaderContainer { text-align: center; padding: 2rem; }
+.notification { position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem; border-radius: 8px; color: white; background-color: #343a40; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: fadeInOut 3s forwards; z-index: 1000; }
+.notification.success { background-color: #2f9e44; }
+.notification.error { background-color: #e03131; }
+@keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translate(10px, -10px); } 10%, 90% { opacity: 1; transform: translate(0, 0); } }

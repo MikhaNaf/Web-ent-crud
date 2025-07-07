@@ -1,107 +1,128 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import type { ChangeEvent, FormEvent, FC } from 'react';
 import supabase from '../utils/supabase';
-import styles from '../assets/css/MataKuliahPage.module.css'; // Path ke file CSS
+import styles from '../assets/css/MataKuliahPage.module.css';
 
-// Tipe Data untuk Mata Kuliah
-interface MataKuliah {
+// --- Tipe Data ---
+interface MataKuliah { id: number; nama_mk: string; }
+interface Kelas { id: number; nama_kelas: string; tahun_ajaran: string; semester: string | number; }
+
+// **FIX 1: Interface disesuaikan kembali menjadi OBJEK (bukan array)**
+interface ScheduledCourse {
   id: number;
-  created_at: string;
-  kode_mk: string;
-  nama_mk: string;
-  sks: number;
+  jam: string;
+  Mata_Kuliah: { id: number; nama_mk: string; } | null;
+  Kelas: { id: number; nama_kelas: string; tahun_ajaran: string; semester: string | number; } | null;
 }
-type MataKuliahFormData = Omit<MataKuliah, 'id' | 'created_at'>;
 
 // Komponen Notifikasi
-interface Notification {
-  message: string;
-  type: 'success' | 'error';
-}
+interface Notification { message: string; type: 'success' | 'error'; }
 const NotificationBanner: FC<{ notification: Notification | null }> = ({ notification }) => {
   if (!notification) return null;
   return <div className={`${styles.notification} ${styles[notification.type]}`}>{notification.message}</div>;
 };
 
+
 const MataKuliahPage = () => {
   const [matkulList, setMatkulList] = useState<MataKuliah[]>([]);
-  const [formData, setFormData] = useState<MataKuliahFormData>({ kode_mk: '', nama_mk: '', sks: 0 });
+  const [kelasList, setKelasList] = useState<Kelas[]>([]);
+  const [scheduledList, setScheduledList] = useState<ScheduledCourse[]>([]);
+  
+  const [selectedMatkul, setSelectedMatkul] = useState<string>('');
+  const [selectedKelas, setSelectedKelas] = useState<string>('');
+  const [jam, setJam] = useState<string>('');
+  
+  const [selectedSemester, setSelectedSemester] = useState<string>('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [notification, setNotification] = useState<Notification | null>(null);
+
+  const semesterOptions = useMemo(() => [...new Set(kelasList.map(k => k.semester.toString()))], [kelasList]);
+  const filteredKelasList = useMemo(() => {
+    if (!selectedSemester) return [];
+    return kelasList.filter(k => k.semester.toString() === selectedSemester);
+  }, [selectedSemester, kelasList]);
 
   const showNotification = (message: string, type: 'success' | 'error') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
   };
 
-  useEffect(() => {
-    fetchMataKuliah();
-  }, []);
-
-  const fetchMataKuliah = async (): Promise<void> => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
-    // Pastikan nama tabel di Supabase adalah 'Mata_Kuliah'
-    const { data, error } = await supabase.from('Mata_Kuliah').select('*').order('created_at', { ascending: false });
-    if (error) {
-      showNotification('Gagal memuat data mata kuliah', 'error');
+    const matkulPromise = supabase.from('Mata_Kuliah').select('*');
+    const kelasPromise = supabase.from('Kelas').select('*');
+    const schedulePromise = supabase.from('module_class').select(`id, jam, Mata_Kuliah:matakuliah_id(id, nama_mk), Kelas:kelas_id(id, nama_kelas, tahun_ajaran, semester)`);
+
+    const [matkulRes, kelasRes, scheduleRes] = await Promise.all([matkulPromise, kelasPromise, schedulePromise]);
+
+    if (matkulRes.error || kelasRes.error || scheduleRes.error) {
+      showNotification('Gagal memuat data', 'error');
     } else {
-      setMatkulList(data as MataKuliah[]);
+      setMatkulList(matkulRes.data || []);
+      setKelasList(kelasRes.data || []);
+      setScheduledList(scheduleRes.data as unknown as ScheduledCourse[]);
     }
     setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleSemesterChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSemester(e.target.value);
+    setSelectedKelas('');
   };
-  
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const { name, value, type } = e.target;
-    // Konversi ke angka jika tipenya number (untuk SKS)
-    const val = type === 'number' ? parseInt(value, 10) || 0 : value;
-    setFormData({ ...formData, [name]: val });
-  };
-  
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    if (!formData.kode_mk || !formData.nama_mk || formData.sks <= 0) {
-      showNotification("Semua field harus diisi dan SKS harus lebih dari 0!", "error");
+    if (!selectedMatkul || !selectedKelas || !jam) {
+      showNotification("Semua field harus diisi!", "error");
       return;
     }
-
+    const newSchedule = { matakuliah_id: selectedMatkul, kelas_id: selectedKelas, jam: jam };
     let error;
     if (editingId) {
-      ({ error } = await supabase.from('Mata_Kuliah').update(formData).eq('id', editingId));
-      if (!error) showNotification('Data mata kuliah berhasil diupdate!', 'success');
-      setEditingId(null);
+      ({ error } = await supabase.from('module_class').update(newSchedule).eq('id', editingId));
+      if (!error) showNotification('Jadwal berhasil diupdate!', 'success');
     } else {
-      ({ error } = await supabase.from('Mata_Kuliah').insert([formData]));
-      if (!error) showNotification('Data mata kuliah berhasil ditambahkan!', 'success');
+      ({ error } = await supabase.from('module_class').insert([newSchedule]));
+      if (!error) showNotification('Jadwal berhasil ditambahkan!', 'success');
     }
-
-    if (error) {
-      showNotification(error.message, 'error');
-    } else {
-      setFormData({ kode_mk: '', nama_mk: '', sks: 0 });
-      fetchMataKuliah();
+    if (error) { showNotification(error.message, 'error') } else {
+      handleCancelEdit();
+      fetchData();
     }
   };
   
-  const handleEditClick = (matkul: MataKuliah): void => {
-    setEditingId(matkul.id);
-    setFormData({ kode_mk: matkul.kode_mk, nama_mk: matkul.nama_mk, sks: matkul.sks });
+  const handleEditClick = (schedule: ScheduledCourse) => {
+    setEditingId(schedule.id);
+    // **FIX 2: Akses properti objek langsung, tanpa [0]**
+    setSelectedSemester(schedule.Kelas?.semester.toString() ?? '');
+    setTimeout(() => {
+        setSelectedKelas(schedule.Kelas?.id.toString() ?? '');
+    }, 0);
+    setSelectedMatkul(schedule.Mata_Kuliah?.id.toString() ?? '');
+    setJam(schedule.jam);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleCancelEdit = (): void => {
+  const handleCancelEdit = () => {
     setEditingId(null);
-    setFormData({ kode_mk: '', nama_mk: '', sks: 0 });
+    setSelectedMatkul('');
+    setSelectedSemester('');
+    setSelectedKelas('');
+    setJam('');
   };
-  
+
   const handleDelete = async (id: number): Promise<void> => {
-    if (window.confirm("Yakin ingin menghapus data mata kuliah ini?")) {
-      const { error } = await supabase.from('Mata_Kuliah').delete().eq('id', id);
-      if (error) {
-        showNotification(error.message, 'error');
-      } else {
-        setMatkulList(matkulList.filter(matkul => matkul.id !== id));
-        showNotification('Data mata kuliah berhasil dihapus.', 'success');
+    if (window.confirm("Yakin ingin menghapus jadwal ini?")) {
+      const { error } = await supabase.from('module_class').delete().eq('id', id);
+      if (error) { showNotification(error.message, 'error') } 
+      else {
+        setScheduledList(scheduledList.filter(item => item.id !== id));
+        showNotification('Jadwal berhasil dihapus.', 'success');
       }
     }
   };
@@ -111,23 +132,29 @@ const MataKuliahPage = () => {
       <NotificationBanner notification={notification} />
       
       <div className={styles.formCard}>
-        <h2>{editingId ? 'Edit Mata Kuliah' : 'Tambah Mata Kuliah Baru'}</h2>
+        <h2>{editingId ? 'Edit Jadwal Kuliah' : 'Tambah Jadwal Kuliah'}</h2>
         <form onSubmit={handleSubmit}>
-          <div className={styles.formGroup}>
-            <input type="text" name="kode_mk" placeholder="Kode Mata Kuliah" value={formData.kode_mk} onChange={handleInputChange} required />
-            <input type="text" name="nama_mk" placeholder="Nama Mata Kuliah" value={formData.nama_mk} onChange={handleInputChange} required />
-          </div>
-          <div className={styles.formGroup}>
-            <input type="number" name="sks" placeholder="Jumlah SKS" value={formData.sks} onChange={handleInputChange} required />
+          <div className={styles.formGrid}>
+            <select value={selectedSemester} onChange={handleSemesterChange} required>
+              <option value="" disabled>Pilih Semester</option>
+              {semesterOptions.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <select value={selectedKelas} onChange={(e) => setSelectedKelas(e.target.value)} required disabled={!selectedSemester}>
+              <option value="" disabled>Pilih Kelas</option>
+              {filteredKelasList.map(k => <option key={k.id} value={k.id}>{k.nama_kelas}</option>)}
+            </select>
+            <select value={selectedMatkul} onChange={(e) => setSelectedMatkul(e.target.value)} required>
+              <option value="" disabled>Pilih Mata Kuliah</option>
+              {matkulList.map(mk => <option key={mk.id} value={mk.id}>{mk.nama_mk}</option>)}
+            </select>
+            <input type="text" name="jam" placeholder="Jadwal Jam (Contoh: Senin, 08:00)" value={jam} onChange={(e) => setJam(e.target.value)} required />
           </div>
           <div className={styles.formActions}>
             <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
-              {editingId ? 'Update Data' : 'Tambah Data'}
+              {editingId ? 'Update Jadwal' : 'Tambah Jadwal'}
             </button>
             {editingId && (
-              <button type="button" onClick={handleCancelEdit} className={`${styles.btn} ${styles.btnSecondary}`}>
-                Batal
-              </button>
+              <button type="button" onClick={handleCancelEdit} className={`${styles.btn} ${styles.btnSecondary}`}>Batal</button>
             )}
           </div>
         </form>
@@ -137,13 +164,22 @@ const MataKuliahPage = () => {
         <div className={styles.loaderContainer}>Memuat data...</div>
       ) : (
         <div className={styles.itemGrid}>
-          {matkulList.map((matkul) => (
-            <div key={matkul.id} className={styles.itemCard}>
-              <h3>{matkul.nama_mk}</h3>
-              <p>Kode: {matkul.kode_mk} <br/> SKS: {matkul.sks}</p>
-              <div className={styles.cardActions}>
-                <button onClick={() => handleEditClick(matkul)} className={styles.cardBtn}>Edit</button>
-                <button onClick={() => handleDelete(matkul.id)} className={`${styles.cardBtn} ${styles.delete}`}>Hapus</button>
+          {scheduledList.map((schedule) => (
+            <div key={schedule.id} className={styles.itemCard}>
+              <div className={styles.cardBody}>
+                {/* **FIX 3: Tampilan JSX juga diubah, akses objek langsung tanpa [0]** */}
+                <h3>{schedule.Mata_Kuliah?.nama_mk ?? 'N/A'}</h3>
+                <p>
+                  <strong>Kelas:</strong> {schedule.Kelas?.nama_kelas ?? 'N/A'}
+                  <br/>
+                  <strong>Jadwal:</strong> {schedule.jam}
+                  <br/>
+                  <strong>T.A:</strong> {schedule.Kelas?.tahun_ajaran ?? 'N/A'} | <strong>Semester:</strong> {schedule.Kelas?.semester ?? 'N/A'}
+                </p>
+              </div>
+              <div className={styles.cardFooter}>
+                <button onClick={() => handleEditClick(schedule)} className={styles.cardBtn}>Edit</button>
+                <button onClick={() => handleDelete(schedule.id)} className={`${styles.cardBtn} ${styles.delete}`}>Hapus</button>
               </div>
             </div>
           ))}

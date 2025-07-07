@@ -1,95 +1,146 @@
 .homePage {
-    padding: 2rem;
-    background-color: #f0f2f5;
+    padding: 2.5rem;
+    background-color: #f8f9fa;
     min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
+
 .formCard {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2.5rem;
 }
+
 .formCard h2 {
     margin-top: 0;
-    color: #1a202c;
+    margin-bottom: 1.5rem;
+    color: #212529;
+    font-weight: 600;
+    font-size: 1.75rem;
 }
+
 .formGrid {
     display: grid;
-    grid-template-columns: 1fr 1fr auto;
-    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
     align-items: center;
 }
+
 .formGrid select {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #cbd5e0;
-    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
     font-size: 1rem;
-    background-color: white;
+    background-color: #f8f9fa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
 }
+
+.formGrid select:focus {
+    outline: none;
+    border-color: #4C6EF5;
+    box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.15);
+}
+
+.formGrid button {
+    grid-column: 1 / -1; /* Tombol mengambil 2 kolom */
+    margin-top: 1rem;
+}
+
 .btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.8rem 1.75rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s;
-    height: fit-content;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
 }
+
 .btnPrimary {
-    background-color: #2563eb;
+    background: #343a40;
     color: white;
+    box-shadow: 0 4px 15px rgba(52, 58, 64, 0.2);
 }
+
 .btnPrimary:hover {
-    background-color: #1d4ed8;
+    background: #212529;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 58, 64, 0.3);
 }
+
 .listContainer {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: transparent; /* Hilangkan latar belakang putih */
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
 }
-.listTable {
-    width: 100%;
-    border-collapse: collapse;
+
+.listContainer h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #212529;
+    font-weight: 600;
+    font-size: 1.75rem;
 }
-.listTable th, .listTable td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
+
+/* Mengganti tabel dengan list kartu */
+.enrollmentList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
-.listTable th {
-    color: #4a5568;
-    font-weight: bold;
+
+.enrollmentCard {
+    background: #ffffff;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
+.enrollmentCard:hover {
+    transform: translateX(5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.enrollmentInfo strong {
+    display: block;
+    color: #343a40;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.enrollmentInfo span {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
 .btnDelete {
-    background-color: #f56565;
-    color: white;
+    background-color: transparent;
+    color: #e03131;
+    border: 1px solid #f8d7da;
     padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 6px;
 }
 .btnDelete:hover {
-    background-color: #e53e3e;
-}
-.loaderContainer { 
-    text-align: center; 
-    padding: 2rem; 
-}
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 1rem 1.5rem;
-    border-radius: 6px;
+    background-color: #e03131;
     color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    animation: fadeInOut 3s forwards;
 }
-.notification.success { background-color: #28a745; }
-.notification.error { background-color: #dc3545; }
-@keyframes fadeInOut {
-    0%, 100% { opacity: 0; transform: translateY(-20px); }
-    10%, 90% { opacity: 1; transform: translateY(0); }
-}
+
+.loaderContainer { text-align: center; padding: 2rem; }
+.notification { position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem; border-radius: 8px; color: white; background-color: #343a40; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: fadeInOut 3s forwards; z-index: 1000; }
+.notification.success { background-color: #2f9e44; }
+.notification.error { background-color: #e03131; }
+@keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translate(10px, -10px); } 10%, 90% { opacity: 1; transform: translate(0, 0); } }

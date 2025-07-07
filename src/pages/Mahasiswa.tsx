@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import type { ChangeEvent, FormEvent, FC } from 'react';
 import supabase from '../utils/supabase';
-import styles from '../assets/css/MahasiswaPage.module.css'; // <-- 1. Import CSS Modules
+import styles from '../assets/css/MahasiswaPage.module.css';
 
-// Tipe Data
+// 1. Tambahkan 'semester' pada Tipe Data
 interface Mahasiswa {
   id: number;
   created_at: string;
   nim: string;
   nama_lengkap: string;
   jurusan: string;
+  semester: string; // <-- Ditambahkan
 }
 type MahasiswaFormData = Omit<Mahasiswa, 'id' | 'created_at'>;
 
@@ -20,20 +21,20 @@ interface Notification {
 }
 const NotificationBanner: FC<{ notification: Notification | null }> = ({ notification }) => {
   if (!notification) return null;
-  // 2. Gunakan styles dari file .css
   return <div className={`${styles.notification} ${styles[notification.type]}`}>{notification.message}</div>;
 };
 
-
-// 3. Hapus '(): JSX.Element' dari definisi komponen
 const MahasiswaPage = () => {
   const [mahasiswaList, setMahasiswaList] = useState<Mahasiswa[]>([]);
-  const [formData, setFormData] = useState<MahasiswaFormData>({ nim: '', nama_lengkap: '', jurusan: '' });
+  // 2. Tambahkan 'semester' ke state formData
+  const [formData, setFormData] = useState<MahasiswaFormData>({ nim: '', nama_lengkap: '', jurusan: '', semester: '' });
   const [editingId, setEditingId] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [notification, setNotification] = useState<Notification | null>(null);
+  
+  // Opsi untuk dropdown semester
+  const semesterOptions = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-  // ... (Semua fungsi logika seperti fetchMahasiswa, handleSubmit, dll. tetap sama) ...
   const showNotification = (message: string, type: 'success' | 'error') => {
     setNotification({ message, type });
     setTimeout(() => {
@@ -56,14 +57,16 @@ const MahasiswaPage = () => {
     setLoading(false);
   };
   
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+  // Dibuat agar bisa menangani input dan select
+  const handleFormChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
   
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    if (!formData.nim || !formData.nama_lengkap || !formData.jurusan) {
+    // 3. Tambahkan validasi untuk semester
+    if (!formData.nim || !formData.nama_lengkap || !formData.jurusan || !formData.semester) {
       showNotification("Semua field harus diisi!", "error");
       return;
     }
@@ -81,20 +84,20 @@ const MahasiswaPage = () => {
     if (error) {
       showNotification(error.message, 'error');
     } else {
-      setFormData({ nim: '', nama_lengkap: '', jurusan: '' });
+      setFormData({ nim: '', nama_lengkap: '', jurusan: '', semester: '' }); // Reset form
       fetchMahasiswa();
     }
   };
   
   const handleEditClick = (mhs: Mahasiswa): void => {
     setEditingId(mhs.id);
-    setFormData({ nim: mhs.nim, nama_lengkap: mhs.nama_lengkap, jurusan: mhs.jurusan });
+    setFormData({ nim: mhs.nim, nama_lengkap: mhs.nama_lengkap, jurusan: mhs.jurusan, semester: mhs.semester });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCancelEdit = (): void => {
     setEditingId(null);
-    setFormData({ nim: '', nama_lengkap: '', jurusan: '' });
+    setFormData({ nim: '', nama_lengkap: '', jurusan: '', semester: '' });
   };
   
   const handleDelete = async (id: number): Promise<void> => {
@@ -110,7 +113,6 @@ const MahasiswaPage = () => {
   };
 
   return (
-    // 4. Ubah semua className menjadi {styles.namaClass}
     <div className={styles.mahasiswaPage}>
       <NotificationBanner notification={notification} />
       
@@ -118,11 +120,16 @@ const MahasiswaPage = () => {
         <h2>{editingId ? 'Edit Mahasiswa' : 'Tambah Mahasiswa'}</h2>
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
-            <input type="text" name="nim" placeholder="NIM" value={formData.nim} onChange={handleInputChange} required />
-            <input type="text" name="nama_lengkap" placeholder="Nama Lengkap" value={formData.nama_lengkap} onChange={handleInputChange} required />
+            <input type="text" name="nim" placeholder="NIM" value={formData.nim} onChange={handleFormChange} required />
+            <input type="text" name="nama_lengkap" placeholder="Nama Lengkap" value={formData.nama_lengkap} onChange={handleFormChange} required />
           </div>
           <div className={styles.formGroup}>
-            <input type="text" name="jurusan" placeholder="Jurusan" value={formData.jurusan} onChange={handleInputChange} required />
+            <input type="text" name="jurusan" placeholder="Jurusan" value={formData.jurusan} onChange={handleFormChange} required />
+            {/* 4. Tambahkan dropdown semester di form */}
+            <select name="semester" value={formData.semester} onChange={handleFormChange} required>
+              <option value="" disabled>Pilih Semester</option>
+              {semesterOptions.map(option => <option key={option} value={option}>{`Semester ${option}`}</option>)}
+            </select>
           </div>
           <div className={styles.formActions}>
             <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
@@ -144,7 +151,12 @@ const MahasiswaPage = () => {
           {mahasiswaList.map((mhs) => (
             <div key={mhs.id} className={styles.mahasiswaCard}>
               <h3>{mhs.nama_lengkap}</h3>
-              <p>NIM: {mhs.nim} <br/> Jurusan: {mhs.jurusan}</p>
+              {/* 5. Tampilkan semester di kartu */}
+              <p>
+                NIM: {mhs.nim} <br/>
+                Jurusan: {mhs.jurusan} <br/>
+                Semester: {mhs.semester}
+              </p>
               <div className={styles.cardActions}>
                 <button onClick={() => handleEditClick(mhs)} className={styles.cardBtn}>Edit</button>
                 <button onClick={() => handleDelete(mhs.id)} className={`${styles.cardBtn} ${styles.delete}`}>Hapus</button>
