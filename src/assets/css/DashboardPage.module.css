@@ -1,0 +1,113 @@
+.dashboardPage {
+    padding: 2.5rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.header {
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 0;
+}
+
+.header p {
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.summaryCard {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    display: flex;
+    flex-direction: column;
+    border-left: 5px solid #4C6EF5;
+}
+
+.summaryCard .count {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+}
+
+.summaryCard .title {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.dataSection {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    margin-bottom: 2rem;
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.sectionHeader h2 {
+    margin: 0;
+    color: #343a40;
+    font-size: 1.5rem;
+}
+
+.manageButton {
+    background-color: #343a40;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+.manageButton:hover {
+    background-color: #212529;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.previewTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.previewTable th, .previewTable td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.previewTable th {
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.loaderContainer {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: #6c757d;
+}

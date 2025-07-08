@@ -8,6 +8,7 @@ import Dosen from "./pages/Dosen"
 import KelasPage from "./pages/KelasPage"
 import MataKuliahPage from "./pages/MataKuliahPage"
 import HomePage from "./pages/HomePage"
+import DashboardPage from "./pages/DashboardPage"
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<UserRegister />} />
           <Route path="/home" element={<HomePage/>} />
+          <Route path="/dashboard" element={<DashboardPage/>} />
         </Route>
         <Route element={<DomainLayout/>}>
           <Route path="/mahasiswa" element={<Mahasiswa/>} />
