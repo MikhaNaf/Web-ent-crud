@@ -32,7 +32,7 @@ export default function Login() {
     console.log(data);
     console.log(userData);
     console.log('Login successfully', userData.session.access_token);
-    navigate('/home');
+    navigate('/dashboard');
     setToken(userData.session.access_token);
   };
 
